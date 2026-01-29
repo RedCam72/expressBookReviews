@@ -134,4 +134,22 @@ public_users.get('/async/isbn/:isbn', async (req, res) => {
   }
 });
 
+// Task 12 (Async/Await + Axios): Get book details based on author
+public_users.get('/async/author/:author', async (req, res) => {
+    try {
+      const author = req.params.author;
+  
+      // Call the existing synchronous author endpoint via Axios
+      const url = `${req.protocol}://${req.get("host")}/author/${encodeURIComponent(author)}`;
+      const response = await axios.get(url);
+  
+      return res.status(200).json(response.data);
+    } catch (err) {
+      if (err.response) {
+        return res.status(err.response.status).json(err.response.data);
+      }
+      return res.status(500).json({ message: "Error fetching books by author", error: err.message });
+    }
+  });
+  
 module.exports.general = public_users;
