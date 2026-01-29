@@ -115,4 +115,23 @@ public_users.get('/async/books', async (req, res) => {
   }
 });
 
+// Task 11 (Async/Await + Axios): Get book details based on ISBN
+public_users.get('/async/isbn/:isbn', async (req, res) => {
+  try {
+    const isbn = req.params.isbn;
+
+    // Call your existing synchronous ISBN endpoint via Axios
+    const url = `${req.protocol}://${req.get("host")}/isbn/${isbn}`;
+    const response = await axios.get(url);
+
+    return res.status(200).json(response.data);
+  } catch (err) {
+    // If the inner call returned 404, forward it cleanly
+    if (err.response) {
+      return res.status(err.response.status).json(err.response.data);
+    }
+    return res.status(500).json({ message: "Error fetching book by ISBN", error: err.message });
+  }
+});
+
 module.exports.general = public_users;
