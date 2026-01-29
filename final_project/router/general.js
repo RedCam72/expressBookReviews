@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
@@ -101,6 +102,17 @@ public_users.get('/review/:isbn',function (req, res) {
     }
   
     return res.status(200).json(reviews);
+});
+
+// Task 10 (Async/Await + Axios): Get the book list available in the shop
+public_users.get('/async/books', async (req, res) => {
+  try {
+    // Call your existing "get all books" endpoint asynchronously
+    const response = await axios.get('http://localhost:5000/');
+    return res.status(200).json(response.data);
+  } catch (err) {
+    return res.status(500).json({ message: "Error fetching book list", error: err.message });
+  }
 });
 
 module.exports.general = public_users;
