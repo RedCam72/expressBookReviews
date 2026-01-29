@@ -29,7 +29,7 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-    return res.status(200).send(JSON.stringify(books, null, 4));
+    return res.status(200).type('json').send(JSON.stringify(books, null, 4));
 });
 
 // Get book details based on ISBN
@@ -107,10 +107,13 @@ public_users.get('/review/:isbn',function (req, res) {
 // Task 10 (Async/Await + Axios): Get the book list available in the shop
 public_users.get('/async/books', async (req, res) => {
   try {
-    // Call your existing "get all books" endpoint asynchronously
-    const response = await axios.get('http://localhost:5000/');
+    const url = `${req.protocol}://${req.get("host")}/`;
+    const response = await axios.get(url);
     return res.status(200).json(response.data);
   } catch (err) {
+    if (err.response) {
+      return res.status(err.response.status).json(err.response.data);
+    }
     return res.status(500).json({ message: "Error fetching book list", error: err.message });
   }
 });
